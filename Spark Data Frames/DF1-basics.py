@@ -1,6 +1,15 @@
-from pyspark.sql import SparkSession
 
-spark = SparkSession.builder.appName('test app').config('local','test1').getOrCreate()
+# --------------------
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.getOrCreate()
+
+# alternative approach ------------------------
+from pyspark import SparkContext
+from pyspark.sql import SQLContext
+sc = SparkContext('local')
+spark = SQLContext(sc)
+# -----------------------------
+
 print(spark)
 
 # Create data frame by using data
