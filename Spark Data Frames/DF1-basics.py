@@ -32,6 +32,8 @@ df1.count()
 df1.printSchema()
 df11.show()
 
+
+
 # read data from csv files to dataframe
 df2 = spark.read.csv('E:/kaggle/titanic/train_kaggle.csv',header=True)
 df2.count()

@@ -10,6 +10,10 @@ sc = SparkContext('local')
 spark = SQLContext(sc)
 # -----------------------------
 
+import json
+#from bson import json_util
+#from bson.json_util import dumps
+
 
 print(spark)
 
@@ -34,6 +38,8 @@ df1.printSchema()
 df11.show()
 
 df1.write.csv('c:/test1')
+
+df1.write.format('excel').
 
 # read data from csv files to dataframe
 df2 = spark.read.csv('E:/kaggle/titanic/train_kaggle.csv',header=True)
@@ -84,6 +90,10 @@ dt1 = DecisionTreeClassifier(featuresCol='Features',labelCol='Survived',maxDepth
 model1 = dt1.fit(df3)
 model1.depth
 
+print(model1.toDebugString)
+
+
+
 # 3 get predictions
 
 
@@ -100,11 +110,44 @@ df20.select('PassengerId','prediction').write.csv('c:/test3.csv')
 
 
 
+	# Parser
+	def parse(lines):
+		block = []
+		while lines :
+			
+			if lines[0].startswith('If'):
+				bl = ' '.join(lines.pop(0).split()[1:]).replace('(', '').replace(')', '')
+				block.append({'name':bl, 'children':parse(lines)})
+				
+				
+				if lines[0].startswith('Else'):
+					be = ' '.join(lines.pop(0).split()[1:]).replace('(', '').replace(')', '')
+					block.append({'name':be, 'children':parse(lines)})
+			elif not lines[0].startswith(('If','Else')):
+				block2 = lines.pop(0)
+				block.append({'name':block2})
+			else:
+				break	
+		return block
+	
+	# Convert Tree to JSON
+	def tree_json(tree):
+		data = []
+		for line in tree.splitlines() : 
+			if line.strip():
+				line = line.strip()
+				data.append(line)
+			else : break
+			if not line : break
+		res = []
+		res.append({'name':'Root', 'children':parse(data[1:])})
+		with open('e:/structure1sparktree.json', 'w') as outfile:
+			json.dump(res[0], outfile)
+		print ('Conversion Success !')
 
 
 
-
-
+tree_json(model1.toDebugString)
 
 
 
